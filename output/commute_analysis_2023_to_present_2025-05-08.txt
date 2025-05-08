@@ -1,0 +1,53 @@
+
+===== STRAVA COMMUTE ANALYSIS =====
+
+Analysis for commutes from 2023 onwards
+
+Total number of commutes: 20
+Total distance of commutes: 34.18 miles
+
+Average commute TO work:
+  Distance: 1.72 miles
+  Moving time: 7.32 minutes
+  Elapsed time: 7.85 minutes
+  Stop time: 0.53 minutes
+
+Average commute FROM work:
+  Distance: 1.70 miles
+  Moving time: 10.75 minutes
+  Elapsed time: 12.80 minutes
+  Stop time: 2.04 minutes
+
+Fastest commute TO work: 16.54 mph
+  Date: 2025-04-10T16:54:29Z
+  Distance: 1.77 miles
+  Moving time: 6.43 minutes
+  Elapsed time: 6.43 minutes
+  Stop time: 0.00 minutes
+  Link: https://www.strava.com/activities/14138459486
+
+Slowest commute TO work: 12.76 mph
+  Date: 2025-04-03T15:39:05Z
+  Distance: 1.67 miles
+  Moving time: 7.83 minutes
+  Elapsed time: 8.93 minutes
+  Stop time: 1.10 minutes
+  Link: https://www.strava.com/activities/14069411671
+
+Fastest commute FROM work: 11.08 mph
+  Date: 2025-04-16T01:33:24Z
+  Distance: 1.95 miles
+  Moving time: 10.55 minutes
+  Elapsed time: 12.40 minutes
+  Stop time: 1.85 minutes
+  Link: https://www.strava.com/activities/14197623794
+
+Slowest commute FROM work: 8.45 mph
+  Date: 2025-04-29T21:48:42Z
+  Distance: 1.62 miles
+  Moving time: 11.47 minutes
+  Elapsed time: 12.87 minutes
+  Stop time: 1.40 minutes
+  Link: https://www.strava.com/activities/14327099053
+
+===================================

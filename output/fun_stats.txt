@@ -1,0 +1,13 @@
+Fun Strava Statistics
+====================
+
+Total Activities: 1874
+Total Distance (km): 29876.6083
+Total Moving Time (hours): 2019.3491666666666
+Total Elevation Gain (m): 428103.3
+Average Speed (km/h): 12.888529861966681
+Most Active Day: Wednesday
+Most Active Hour: 19:00
+Favorite Activity Type: Run
+Longest Activity (km): 188.049
+Highest Elevation Gain (m): 3889.5
