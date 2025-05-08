@@ -92,7 +92,7 @@ class CommuteAnalyzer:
         return avg_distance, avg_moving_time, avg_elapsed_time
     
     def _calculate_speed(self, commute):
-        """Calculate speed in mph for a commute"""
+        """Calculate speed in mph for a commute using moving time"""
         if commute['moving_time'] == 0:
             return 0
         
@@ -100,12 +100,17 @@ class CommuteAnalyzer:
         time_hours = commute['moving_time'] / 3600
         return distance_miles / time_hours
     
+    def _calculate_elapsed_time_minutes(self, commute):
+        """Calculate elapsed time in minutes for a commute"""
+        return commute['elapsed_time'] / 60
+    
     def fastest_commute_to_work(self):
-        """Find the fastest commute to work"""
+        """Find the commute to work with shortest elapsed time"""
         if not self.to_work_commutes:
             return None
         
-        fastest = max(self.to_work_commutes, key=self._calculate_speed)
+        # Sort by elapsed time (ascending)
+        fastest = min(self.to_work_commutes, key=self._calculate_elapsed_time_minutes)
         return {
             'id': fastest['id'],
             'date': fastest['start_date'],
@@ -117,11 +122,12 @@ class CommuteAnalyzer:
         }
     
     def slowest_commute_to_work(self):
-        """Find the slowest commute to work"""
+        """Find the commute to work with longest elapsed time"""
         if not self.to_work_commutes:
             return None
         
-        slowest = min(self.to_work_commutes, key=self._calculate_speed)
+        # Sort by elapsed time (descending)
+        slowest = max(self.to_work_commutes, key=self._calculate_elapsed_time_minutes)
         return {
             'id': slowest['id'],
             'date': slowest['start_date'],
@@ -133,11 +139,12 @@ class CommuteAnalyzer:
         }
     
     def fastest_commute_from_work(self):
-        """Find the fastest commute from work"""
+        """Find the commute from work with shortest elapsed time"""
         if not self.from_work_commutes:
             return None
         
-        fastest = max(self.from_work_commutes, key=self._calculate_speed)
+        # Sort by elapsed time (ascending)
+        fastest = min(self.from_work_commutes, key=self._calculate_elapsed_time_minutes)
         return {
             'id': fastest['id'],
             'date': fastest['start_date'],
@@ -149,11 +156,12 @@ class CommuteAnalyzer:
         }
     
     def slowest_commute_from_work(self):
-        """Find the slowest commute from work"""
+        """Find the commute from work with longest elapsed time"""
         if not self.from_work_commutes:
             return None
         
-        slowest = min(self.from_work_commutes, key=self._calculate_speed)
+        # Sort by elapsed time (descending)
+        slowest = max(self.from_work_commutes, key=self._calculate_elapsed_time_minutes)
         return {
             'id': slowest['id'],
             'date': slowest['start_date'],
@@ -189,7 +197,7 @@ class CommuteAnalyzer:
         
         fastest_to = self.fastest_commute_to_work()
         if fastest_to:
-            lines.append(f"\nFastest commute TO work: {fastest_to['speed']:.2f} mph")
+            lines.append(f"\nQuickest commute TO work (by elapsed time): {fastest_to['elapsed_time']:.2f} minutes")
             lines.append(f"  Date: {fastest_to['date']}")
             lines.append(f"  Distance: {fastest_to['distance']:.2f} miles")
             lines.append(f"  Moving time: {fastest_to['moving_time']:.2f} minutes")
@@ -199,7 +207,7 @@ class CommuteAnalyzer:
         
         slowest_to = self.slowest_commute_to_work()
         if slowest_to:
-            lines.append(f"\nSlowest commute TO work: {slowest_to['speed']:.2f} mph")
+            lines.append(f"\nLongest commute TO work (by elapsed time): {slowest_to['elapsed_time']:.2f} minutes")
             lines.append(f"  Date: {slowest_to['date']}")
             lines.append(f"  Distance: {slowest_to['distance']:.2f} miles")
             lines.append(f"  Moving time: {slowest_to['moving_time']:.2f} minutes")
@@ -209,7 +217,7 @@ class CommuteAnalyzer:
         
         fastest_from = self.fastest_commute_from_work()
         if fastest_from:
-            lines.append(f"\nFastest commute FROM work: {fastest_from['speed']:.2f} mph")
+            lines.append(f"\nQuickest commute FROM work (by elapsed time): {fastest_from['elapsed_time']:.2f} minutes")
             lines.append(f"  Date: {fastest_from['date']}")
             lines.append(f"  Distance: {fastest_from['distance']:.2f} miles")
             lines.append(f"  Moving time: {fastest_from['moving_time']:.2f} minutes")
@@ -219,7 +227,7 @@ class CommuteAnalyzer:
         
         slowest_from = self.slowest_commute_from_work()
         if slowest_from:
-            lines.append(f"\nSlowest commute FROM work: {slowest_from['speed']:.2f} mph")
+            lines.append(f"\nLongest commute FROM work (by elapsed time): {slowest_from['elapsed_time']:.2f} minutes")
             lines.append(f"  Date: {slowest_from['date']}")
             lines.append(f"  Distance: {slowest_from['distance']:.2f} miles")
             lines.append(f"  Moving time: {slowest_from['moving_time']:.2f} minutes")
