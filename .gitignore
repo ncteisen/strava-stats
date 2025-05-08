@@ -19,3 +19,6 @@ ENV/
 
 # Log files
 data_collection.log
+
+# Mac artifacts
+.DS_Store
