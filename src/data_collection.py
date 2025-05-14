@@ -26,6 +26,7 @@ class StravaDataCollector:
         self.refresh_token = os.getenv('STRAVA_REFRESH_TOKEN')
         self.access_token = None
         self.activities = []
+        self.existing_activities = []
         
         # Validate environment variables
         if not all([self.client_id, self.client_secret, self.refresh_token]):
@@ -51,13 +52,30 @@ class StravaDataCollector:
         logger.error(f"Failed to get access token. Status code: {response.status_code}")
         return False
 
-    def fetch_activities(self, per_page=100, max_pages=100):
-        """Fetch activities from Strava API"""
-        logger.info(f"Starting to fetch activities (per_page={per_page}, max_pages={max_pages})")
+    def load_existing_activities(self, filename='data/activities.json'):
+        """Load existing activities from file if it exists"""
+        try:
+            if os.path.exists(filename):
+                with open(filename, 'r') as f:
+                    self.existing_activities = json.load(f)
+                logger.info(f"Loaded {len(self.existing_activities)} existing activities from {filename}")
+            else:
+                logger.info(f"No existing activities file found at {filename}")
+        except Exception as e:
+            logger.error(f"Error loading existing activities: {str(e)}")
+            self.existing_activities = []
+
+    def fetch_activities(self, per_page=100, max_pages=10):
+        """Fetch activities from Strava API for the past month only"""
+        logger.info(f"Starting to fetch activities for the past month")
         
         if not self.access_token and not self.get_access_token():
             raise Exception("Failed to get access token")
 
+        # Calculate timestamp for 1 month ago
+        one_month_ago = datetime.now() - timedelta(days=30)
+        after_timestamp = int(one_month_ago.timestamp())
+        
         headers = {'Authorization': f'Bearer {self.access_token}'}
         page = 1
         total_activities = 0
@@ -67,7 +85,11 @@ class StravaDataCollector:
             response = requests.get(
                 'https://www.strava.com/api/v3/athlete/activities',
                 headers=headers,
-                params={'per_page': per_page, 'page': page}
+                params={
+                    'per_page': per_page, 
+                    'page': page,
+                    'after': after_timestamp
+                }
             )
             
             if response.status_code != 200:
@@ -86,14 +108,36 @@ class StravaDataCollector:
 
         logger.info(f"Completed fetching activities. Total activities collected: {total_activities}")
 
-    def save_activities(self, filename='data/activities.json'):
-        """Save activities to a JSON file"""
-        logger.info(f"Attempting to save activities to {filename}")
+    def update_and_save_activities(self, filename='data/activities.json'):
+        """Update existing activities and append new ones, then save to file"""
+        logger.info(f"Processing activities for updates and new additions")
+        
+        # Create a dictionary of existing activities by ID for quick lookup
+        existing_dict = {activity['id']: activity for activity in self.existing_activities}
+        updated_count = 0
+        new_count = 0
+        
+        # Process new activities - update existing ones or add new ones
+        for activity in self.activities:
+            if activity['id'] in existing_dict:
+                # Update existing activity
+                existing_dict[activity['id']] = activity
+                updated_count += 1
+            else:
+                # Add new activity
+                existing_dict[activity['id']] = activity
+                new_count += 1
+        
+        # Convert back to list
+        updated_activities = list(existing_dict.values())
+        
+        # Save to file
         try:
             os.makedirs(os.path.dirname(filename), exist_ok=True)
             with open(filename, 'w') as f:
-                json.dump(self.activities, f, indent=2)
-            logger.info(f"Successfully saved {len(self.activities)} activities to {filename}")
+                json.dump(updated_activities, f, indent=2)
+            logger.info(f"Successfully saved {len(updated_activities)} activities to {filename}")
+            logger.info(f"Updated {updated_count} existing activities and added {new_count} new activities")
         except Exception as e:
             logger.error(f"Error saving activities to file: {str(e)}")
             raise
@@ -102,8 +146,9 @@ def main():
     try:
         logger.info("Starting Strava data collection process")
         collector = StravaDataCollector()
+        collector.load_existing_activities()
         collector.fetch_activities()
-        collector.save_activities()
+        collector.update_and_save_activities()
         logger.info("Data collection process completed successfully")
     except Exception as e:
         logger.error(f"An error occurred during data collection: {str(e)}")
