@@ -424,9 +424,8 @@ class CommuteAnalyzer:
     def save_analysis_to_file(self, analysis_text, filename=None):
         """Save the analysis to a text file"""
         if filename is None:
-            # Create a filename with the date and year range
-            current_date = datetime.now().strftime("%Y-%m-%d")
-            filename = f"output/commute_analysis_{self.start_year}_to_present_{current_date}.txt"
+            # Use a fixed filename that will be overwritten each time
+            filename = "output/commute_analysis.txt"
         
         # Create output directory if it doesn't exist
         os.makedirs(os.path.dirname(filename), exist_ok=True)

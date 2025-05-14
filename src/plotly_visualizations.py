@@ -21,10 +21,10 @@ class InteractiveStravaVisualizer:
     def _prepare_dataframe(self):
         df = pd.DataFrame(self.activities)
         df['start_date'] = pd.to_datetime(df['start_date']).dt.tz_convert(self.timezone)
-        df['distance_km'] = df['distance'] / 1000
+        df['distance_miles'] = df['distance'] * 0.000621371  # Convert meters to miles
         df['moving_time_hours'] = df['moving_time'] / 3600
-        df['elevation_gain_m'] = df['total_elevation_gain']
-        df['speed_kmh'] = df['distance_km'] / df['moving_time_hours']
+        df['elevation_gain_ft'] = df['total_elevation_gain'] * 3.28084  # Convert meters to feet
+        df['speed_mph'] = df['distance_miles'] / df['moving_time_hours']  # Speed in mph
         df['year'] = df['start_date'].dt.year
         df['month'] = df['start_date'].dt.month
         df['day_of_week'] = df['start_date'].dt.day_name()
@@ -35,33 +35,33 @@ class InteractiveStravaVisualizer:
     def create_activity_bubble_chart(self):
         """Create an interactive bubble chart of activities with filters"""
         activity_groups = self.df.groupby('type').agg({
-            'distance_km': 'sum',
+            'distance_miles': 'sum',
             'moving_time_hours': 'sum',
-            'elevation_gain_m': 'sum',
-            'speed_kmh': 'mean',
+            'elevation_gain_ft': 'sum',
+            'speed_mph': 'mean',
             'date': 'count'
         }).reset_index()
 
         fig = px.scatter(
             activity_groups,
-            x='distance_km',
-            y='elevation_gain_m',
+            x='distance_miles',
+            y='elevation_gain_ft',
             size='moving_time_hours',
             color='type',
             hover_name='type',
             hover_data={
-                'distance_km': ':.1f',
-                'elevation_gain_m': ':.0f',
+                'distance_miles': ':.1f',
+                'elevation_gain_ft': ':.0f',
                 'moving_time_hours': ':.1f',
-                'speed_kmh': ':.1f',
+                'speed_mph': ':.1f',
                 'date': ':.0f'
             },
             title='Activity Overview: Distance vs Elevation Gain<br><sup>Bubble size represents time spent</sup>',
             labels={
-                'distance_km': 'Total Distance (km)',
-                'elevation_gain_m': 'Total Elevation Gain (m)',
+                'distance_miles': 'Total Distance (miles)',
+                'elevation_gain_ft': 'Total Elevation Gain (feet)',
                 'moving_time_hours': 'Moving Time (hours)',
-                'speed_kmh': 'Average Speed (km/h)',
+                'speed_mph': 'Average Speed (mph)',
                 'date': 'Number of Activities'
             }
         )
@@ -170,11 +170,11 @@ class InteractiveStravaVisualizer:
     def create_monthly_stats_chart(self):
         """Create an interactive monthly statistics chart with range slider"""
         monthly_stats = self.df.groupby(self.df['start_date'].dt.to_period('M')).agg({
-            'distance_km': 'sum',
+            'distance_miles': 'sum',
             'moving_time_hours': 'sum',
-            'elevation_gain_m': 'sum',
+            'elevation_gain_ft': 'sum',
             'type': 'count',
-            'speed_kmh': 'mean'
+            'speed_mph': 'mean'
         }).reset_index()
         
         monthly_stats['start_date'] = monthly_stats['start_date'].astype(str)
@@ -189,11 +189,11 @@ class InteractiveStravaVisualizer:
         fig.add_trace(
             go.Bar(
                 x=monthly_stats['start_date'],
-                y=monthly_stats['distance_km'],
-                name='Distance (km)',
+                y=monthly_stats['distance_miles'],
+                name='Distance (miles)',
                 marker_color='rgb(55, 83, 109)',
                 hovertemplate="<b>Month:</b> %{x}<br>" +
-                             "<b>Distance:</b> %{y:.1f} km<br>" +
+                             "<b>Distance:</b> %{y:.1f} miles<br>" +
                              "<extra></extra>"
             ),
             row=1, col=1
@@ -203,11 +203,11 @@ class InteractiveStravaVisualizer:
         fig.add_trace(
             go.Scatter(
                 x=monthly_stats['start_date'],
-                y=monthly_stats['elevation_gain_m'],
-                name='Elevation Gain (m)',
+                y=monthly_stats['elevation_gain_ft'],
+                name='Elevation Gain (feet)',
                 line=dict(color='rgb(255, 0, 0)'),
                 hovertemplate="<b>Month:</b> %{x}<br>" +
-                             "<b>Elevation Gain:</b> %{y:.0f} m<br>" +
+                             "<b>Elevation Gain:</b> %{y:.0f} feet<br>" +
                              "<extra></extra>"
             ),
             row=1, col=1
@@ -267,7 +267,7 @@ class InteractiveStravaVisualizer:
         """Create an interactive heatmap of activities by day and hour with filters"""
         heatmap_data = pd.pivot_table(
             self.df,
-            values='distance_km',
+            values='distance_miles',
             index='hour',
             columns='day_of_week',
             aggfunc='count',
@@ -315,7 +315,7 @@ class InteractiveStravaVisualizer:
                             label="Running",
                             method="update",
                             args=[{"z": [self.df[self.df['type'] == 'Run'].pivot_table(
-                                values='distance_km',
+                                values='distance_miles',
                                 index='hour',
                                 columns='day_of_week',
                                 aggfunc='count',
@@ -326,7 +326,7 @@ class InteractiveStravaVisualizer:
                             label="Cycling",
                             method="update",
                             args=[{"z": [self.df[self.df['type'] == 'Ride'].pivot_table(
-                                values='distance_km',
+                                values='distance_miles',
                                 index='hour',
                                 columns='day_of_week',
                                 aggfunc='count',
