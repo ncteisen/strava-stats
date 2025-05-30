@@ -3,12 +3,12 @@
 
 Analysis for commutes from 2025 onwards
 
-Total number of commutes: 30
-Total distance of commutes: 51.77 miles
-Total elapsed time of commutes: 5h 10m
+Total number of commutes: 34
+Total distance of commutes: 60.47 miles
+Total elapsed time of commutes: 6h 2m
 
-Average departure time TO work: 9:11 AM
-Average departure time FROM work: 3:40 PM
+Average departure time TO work: 9:10 AM
+Average departure time FROM work: 3:29 PM
 
 Earliest departure TO work: 7:58 AM
   Date: 4/1/2025
@@ -18,25 +18,25 @@ Latest departure TO work: 9:56 AM
   Date: 5/15/2025
   Link: https://www.strava.com/activities/14490422393
 
-Earliest departure FROM work: 2:16 PM
-  Date: 4/16/2025
-  Link: https://www.strava.com/activities/14199104195
+Earliest departure FROM work: 1:28 PM
+  Date: 5/27/2025
+  Link: https://www.strava.com/activities/14623962462
 
 Latest departure FROM work: 6:33 PM
   Date: 4/16/2025
   Link: https://www.strava.com/activities/14197623794
 
 Average commute TO work:
-  Distance: 1.70 miles
-  Moving time: 7m 27s
-  Elapsed time: 8m 2s
-  Stop time: 35s
+  Distance: 1.79 miles
+  Moving time: 8m
+  Elapsed time: 8m 41s
+  Stop time: 40s
 
 Average commute FROM work:
-  Distance: 1.75 miles
-  Moving time: 10m 54s
-  Elapsed time: 12m 39s
-  Stop time: 1m 44s
+  Distance: 1.77 miles
+  Moving time: 11m
+  Elapsed time: 12m 36s
+  Stop time: 1m 35s
 
 Quickest commute TO work (by elapsed time): 6m 26s
   Date: 4/10/2025
@@ -46,13 +46,13 @@ Quickest commute TO work (by elapsed time): 6m 26s
   Stop time: 0s
   Link: https://www.strava.com/activities/14138459486
 
-Longest commute TO work (by elapsed time): 10m 3s
-  Date: 5/15/2025
-  Distance: 1.79 miles
-  Moving time: 8m 39s
-  Elapsed time: 10m 3s
-  Stop time: 1m 24s
-  Link: https://www.strava.com/activities/14490422393
+Longest commute TO work (by elapsed time): 19m 4s
+  Date: 5/29/2025
+  Distance: 3.17 miles
+  Moving time: 17m 3s
+  Elapsed time: 19m 4s
+  Stop time: 2m 1s
+  Link: https://www.strava.com/activities/14632688384
 
 Quickest commute FROM work (by elapsed time): 10m 56s
   Date: 5/22/2025
