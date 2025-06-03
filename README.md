@@ -41,3 +41,11 @@ python src/visualization.py
   - `visualization.py`: Generates visualizations from the collected data
 - `data/`: Directory for storing activity data
 - `output/`: Directory for generated visualizations
+
+## Running Tests
+
+Execute the project's unit tests using [pytest](https://pytest.org/):
+
+```bash
+pytest
+```
