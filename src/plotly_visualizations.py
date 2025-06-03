@@ -102,7 +102,28 @@ class InteractiveStravaVisualizer:
 
     def create_time_distribution_chart(self):
         """Create an interactive polar chart of activity times with filters"""
-        hourly_counts = self.df['hour'].value_counts().sort_index()
+        hourly_counts = (
+            self.df['hour']
+            .value_counts()
+            .reindex(range(24), fill_value=0)
+            .sort_index()
+        )
+
+        weekday_counts = (
+            self.df[self.df['day_of_week'].isin(
+                ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+            )]['hour']
+            .value_counts()
+            .reindex(range(24), fill_value=0)
+            .sort_index()
+        )
+
+        weekend_counts = (
+            self.df[self.df['day_of_week'].isin(['Saturday', 'Sunday'])]['hour']
+            .value_counts()
+            .reindex(range(24), fill_value=0)
+            .sort_index()
+        )
         
         fig = go.Figure()
         
@@ -146,19 +167,17 @@ class InteractiveStravaVisualizer:
                         dict(
                             label="All Days",
                             method="update",
-                            args=[{"visible": [True]}]
+                            args=[{"r": [hourly_counts.values]}]
                         ),
                         dict(
                             label="Weekdays",
                             method="update",
-                            args=[{"visible": [True]}],
-                            args2=[{"r": [self.df[self.df['day_of_week'].isin(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])]['hour'].value_counts().sort_index().values]}]
+                            args=[{"r": [weekday_counts.values]}]
                         ),
                         dict(
                             label="Weekends",
                             method="update",
-                            args=[{"visible": [True]}],
-                            args2=[{"r": [self.df[self.df['day_of_week'].isin(['Saturday', 'Sunday'])]['hour'].value_counts().sort_index().values]}]
+                            args=[{"r": [weekend_counts.values]}]
                         )
                     ]),
                 )

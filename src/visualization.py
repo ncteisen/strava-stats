@@ -84,11 +84,16 @@ class StravaVisualizer:
         # Create 24-hour clock
         hours = np.linspace(0, 2*np.pi, 24, endpoint=False)
         
-        # Count activities by hour
-        activity_counts = self.df['hour'].value_counts().sort_index()
-        
+        # Count activities by hour ensuring all 24 hours are represented
+        activity_counts = (
+            self.df['hour']
+            .value_counts()
+            .reindex(range(24), fill_value=0)
+            .sort_index()
+        )
+
         # Create bars
-        bars = ax.bar(hours, activity_counts, width=2*np.pi/24, alpha=0.7)
+        bars = ax.bar(hours, activity_counts.values, width=2*np.pi/24, alpha=0.7)
         
         # Customize the plot
         ax.set_theta_zero_location('N')
