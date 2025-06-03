@@ -7,7 +7,7 @@ Total Moving Time (hours): 2051.43
 Total Elevation Gain (feet): 1428542.37
 Average Speed (mph): 8.04
 Most Active Day: Wednesday
-Most Active Hour: 19:00
+Most Active Hour: 16:00
 Favorite Activity Type: Run
 Longest Activity (miles): 116.85
 Highest Elevation Gain (feet): 12760.83

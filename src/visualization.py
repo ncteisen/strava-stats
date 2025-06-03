@@ -24,7 +24,33 @@ class StravaVisualizer:
     def _prepare_dataframe(self):
         """Convert activities to pandas DataFrame with proper timezone handling"""
         df = pd.DataFrame(self.activities)
-        df['start_date'] = pd.to_datetime(df['start_date']).dt.tz_convert(self.timezone)
+        # Convert start_date (UTC) to each activity's local timezone as provided by the
+        # 'timezone' field. Strava stores timestamps in UTC and provides the athlete's
+        # local TZ string (e.g., "(GMT-05:00) America/New_York"). We parse that string
+        # and use it for row-specific conversion, falling back to self.timezone when
+        # parsing fails.
+
+        # First, ensure the column is timezone-aware UTC
+        start_date_utc = pd.to_datetime(df['start_date'], utc=True)
+
+        def _get_timezone_name(tz_str):
+            if pd.isna(tz_str):
+                return self.timezone
+            # Strava format example: "(GMT-05:00) America/New_York" – take the part after ") "
+            tz_name = tz_str.split(') ')
+            tz_name = tz_name[-1] if len(tz_name) > 1 else tz_name[0]
+            if tz_name not in pytz.all_timezones_set:
+                return self.timezone
+            try:
+                return pytz.timezone(tz_name)
+            except Exception:
+                return self.timezone
+        
+        # Convert to local time but keep as timezone-naive for easier processing
+        df['timezone_obj'] = df.get('timezone', pd.Series([None]*len(df))).apply(_get_timezone_name)
+        df['start_date'] = start_date_utc
+        df['start_date'] = df.apply(lambda row: row['start_date'].tz_convert(row['timezone_obj']).tz_localize(None), axis=1)
+        df = df.drop('timezone_obj', axis=1)
         df['distance_miles'] = df['distance'] * 0.000621371  # Convert meters to miles
         df['moving_time_hours'] = df['moving_time'] / 3600
         df['elevation_gain_ft'] = df['total_elevation_gain'] * 3.28084  # Convert meters to feet
@@ -106,37 +132,67 @@ class StravaVisualizer:
         plt.close()
 
     def plot_weekly_heatmap(self):
-        """Create an enhanced heatmap of activities by day and hour"""
+        """Create separate heatmaps for Run and Ride activities using local time"""
+
         df = self.df.copy()
-        
-        # Create pivot table for heatmap
-        heatmap_data = pd.pivot_table(
-            df,
-            values='distance_miles',  # Changed from distance_km
-            index='hour',
-            columns='day_of_week',
-            aggfunc='count',
-            fill_value=0
-        )
-        
-        # Reorder days of week
+
+        # Ensure local hour is available (already local after _prepare_dataframe, but explicit for clarity)
+        df['local_hour'] = df['start_date'].dt.hour
+
+        # Bucket activity types into two high-level categories
+        def _categorise(t):
+            t_lower = t.lower()
+            if t_lower == 'run':
+                return 'Run'
+            if t_lower in {'ride', 'bike', 'cycling'}:
+                return 'Ride'
+            return 'Other'
+
+        df['activity_category'] = df['type'].apply(_categorise)
+
+        categories = ['Run', 'Ride']
         days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-        heatmap_data = heatmap_data[days]
-        
-        plt.figure(figsize=(15, 10))
-        sns.heatmap(
-            heatmap_data,
-            cmap='YlOrRd',
-            annot=True,
-            fmt='.0f',
-            linewidths=.5,
-            cbar_kws={'label': 'Number of Activities'}
-        )
-        plt.title('Activity Heatmap by Day and Hour')
-        plt.xlabel('Day of Week')
-        plt.ylabel('Hour of Day')
-        plt.tight_layout()
-        
+
+        fig, axes = plt.subplots(1, len(categories), figsize=(22, 8), sharey=True)
+
+        # Prepare pretty hour labels: 0 -> 12am, 1 -> 1am, ..., 23 -> 11pm
+        hour_labels = [f"{(h % 12) or 12}{'am' if h < 12 else 'pm'}" for h in range(24)]
+
+        for ax, cat in zip(axes, categories):
+            subset = df[df['activity_category'] == cat]
+
+            # Create pivot table (ensure full index/columns present)
+            heatmap_data = pd.pivot_table(
+                subset,
+                values='distance_miles',  # value column irrelevant, we just count
+                index='local_hour',
+                columns='day_of_week',
+                aggfunc='count',
+                fill_value=0,
+            ).reindex(index=range(24), fill_value=0)[days]
+
+            sns.heatmap(
+                heatmap_data,
+                cmap='YlOrRd',
+                ax=ax,
+                cbar=False,  # We'll add a shared colour bar later
+                linewidths=.5,
+                yticklabels=hour_labels,
+            )
+
+            ax.set_title(cat)
+            ax.set_xlabel('Day of Week')
+            if ax is axes[0]:
+                ax.set_ylabel('Hour of Day')
+            else:
+                ax.set_ylabel('')
+            # Rotate tick labels for readability (already horizontal)
+            ax.tick_params(axis='y', labelrotation=0)
+
+
+        fig.suptitle('Weekly Activity Heatmap by Day & Hour (Local Time)')
+        plt.tight_layout(rect=[0, 0, 0.95, 0.95])
+
         plt.savefig('output/weekly_heatmap.png')
         plt.close()
 
