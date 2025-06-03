@@ -44,6 +44,7 @@ jobs:
         run: |
           python src/visualization.py
           python src/plotly_visualizations.py
+          python src/wrapped_summary.py
 
       - name: Remove .env file
         run: rm -f .env
