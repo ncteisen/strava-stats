@@ -2,7 +2,7 @@ name: Weekly Strava Data Update
 
 on:
   schedule:
-    # Run at midnight PST on Thursday (8 AM UTC Friday)
+    # Run at midnight PST on Friday (8 AM UTC Friday)
     - cron: '0 8 * * 5'
   workflow_dispatch:
     # Allow manual triggering
