@@ -40,4 +40,4 @@ python src/visualization.py
   - `data_collection.py`: Fetches and stores Strava activity data
   - `visualization.py`: Generates visualizations from the collected data
 - `data/`: Directory for storing activity data
-- `output/`: Directory for generated visualizations 
+- `output/`: Directory for generated visualizations
