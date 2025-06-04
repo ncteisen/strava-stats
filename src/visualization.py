@@ -153,48 +153,67 @@ class StravaVisualizer:
         categories = ['Run', 'Ride']
         days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
-        fig, axes = plt.subplots(1, len(categories), figsize=(22, 8), sharey=True)
-
         # Prepare pretty hour labels: 0 -> 12am, 1 -> 1am, ..., 23 -> 11pm
         hour_labels = [f"{(h % 12) or 12}{'am' if h < 12 else 'pm'}" for h in range(24)]
+        
+        def _create_heatmap(data_subset, title_suffix, filename):
+            """Helper function to create a heatmap for given data subset"""
+            fig, axes = plt.subplots(1, len(categories), figsize=(22, 8), sharey=True)
 
-        for ax, cat in zip(axes, categories):
-            subset = df[df['activity_category'] == cat]
+            for ax, cat in zip(axes, categories):
+                subset = data_subset[data_subset['activity_category'] == cat]
 
-            # Create pivot table (ensure full index/columns present)
-            heatmap_data = pd.pivot_table(
-                subset,
-                values='distance_miles',  # value column irrelevant, we just count
-                index='local_hour',
-                columns='day_of_week',
-                aggfunc='count',
-                fill_value=0,
-            ).reindex(index=range(24), fill_value=0)[days]
+                # Create pivot table (ensure full index/columns present)
+                heatmap_data = pd.pivot_table(
+                    subset,
+                    values='distance_miles',  # value column irrelevant, we just count
+                    index='local_hour',
+                    columns='day_of_week',
+                    aggfunc='count',
+                    fill_value=0,
+                ).reindex(index=range(24), columns=days, fill_value=0)
 
-            sns.heatmap(
-                heatmap_data,
-                cmap='YlOrRd',
-                ax=ax,
-                cbar=False,  # We'll add a shared colour bar later
-                linewidths=.5,
-                yticklabels=hour_labels,
-            )
+                # Create annotation array with empty strings for zero values
+                annot_data = heatmap_data.copy()
+                annot_data = annot_data.astype(str)
+                annot_data[heatmap_data == 0] = ''
 
-            ax.set_title(cat)
-            ax.set_xlabel('Day of Week')
-            if ax is axes[0]:
-                ax.set_ylabel('Hour of Day')
-            else:
-                ax.set_ylabel('')
-            # Rotate tick labels for readability (already horizontal)
-            ax.tick_params(axis='y', labelrotation=0)
+                sns.heatmap(
+                    heatmap_data,
+                    cmap='YlOrRd',
+                    ax=ax,
+                    cbar=False,  # We'll add a shared colour bar later
+                    linewidths=.5,
+                    yticklabels=hour_labels,
+                    annot=annot_data,
+                    fmt='',
+                    annot_kws={'color': '#ffffff', 'fontsize': 10},
+                )
 
+                ax.set_title(cat)
+                ax.set_xlabel('Day of Week')
+                if ax is axes[0]:
+                    ax.set_ylabel('Hour of Day')
+                else:
+                    ax.set_ylabel('')
+                # Rotate tick labels for readability (already horizontal)
+                ax.tick_params(axis='y', labelrotation=0)
 
-        fig.suptitle('Weekly Activity Heatmap by Day & Hour (Local Time)')
-        plt.tight_layout(rect=[0, 0, 0.95, 0.95])
+            fig.suptitle(f'Weekly Activity Heatmap by Day & Hour (Local Time){title_suffix}')
+            plt.tight_layout(rect=[0, 0, 0.95, 0.95])
 
-        plt.savefig('output/weekly_heatmap.png')
-        plt.close()
+            plt.savefig(f'output/{filename}')
+            plt.close()
+        
+        # Generate all-time heatmap
+        _create_heatmap(df, '', 'weekly_heatmap_all_time.png')
+        
+        # Generate yearly heatmaps
+        unique_years = sorted(df['year'].unique())
+        for year in unique_years:
+            year_data = df[df['year'] == year]
+            if len(year_data) > 0:  # Only create heatmap if there's data for that year
+                _create_heatmap(year_data, f' - {year}', f'weekly_heatmap_{year}.png')
 
     def plot_monthly_stats(self):
         """Create a monthly statistics visualization"""
