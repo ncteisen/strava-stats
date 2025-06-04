@@ -178,6 +178,10 @@ class StravaVisualizer:
                 annot_data = annot_data.astype(str)
                 annot_data[heatmap_data == 0] = ''
 
+                # Calculate totals for each day and create labels with counts
+                day_totals = heatmap_data.sum(axis=0)
+                day_labels_with_counts = [f"{day}\n({int(day_totals[day])})" for day in days]
+
                 sns.heatmap(
                     heatmap_data,
                     cmap='YlOrRd',
@@ -185,6 +189,7 @@ class StravaVisualizer:
                     cbar=False,  # We'll add a shared colour bar later
                     linewidths=.5,
                     yticklabels=hour_labels,
+                    xticklabels=day_labels_with_counts,
                     annot=annot_data,
                     fmt='',
                     annot_kws={'color': '#ffffff', 'fontsize': 10},
@@ -199,7 +204,7 @@ class StravaVisualizer:
                 # Rotate tick labels for readability (already horizontal)
                 ax.tick_params(axis='y', labelrotation=0)
 
-            fig.suptitle(f'Weekly Activity Heatmap by Day & Hour (Local Time){title_suffix}')
+            fig.suptitle(f'Weekly Activity Heatmap by Day & Hour {title_suffix}')
             plt.tight_layout(rect=[0, 0, 0.95, 0.95])
 
             plt.savefig(f'output/{filename}')
