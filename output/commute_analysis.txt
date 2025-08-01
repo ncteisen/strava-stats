@@ -3,16 +3,16 @@
 
 Analysis for commutes from 2025 onwards
 
-Total number of commutes: 38
-Total distance of commutes: 67.76 miles
-Total elapsed time of commutes: 6h 47m
+Total number of commutes: 39
+Total distance of commutes: 89.69 miles
+Total elapsed time of commutes: 8h 23m
 
-Average departure time TO work: 9:08 AM
+Average departure time TO work: 9:01 AM
 Average departure time FROM work: 3:26 PM
 
-Earliest departure TO work: 7:58 AM
-  Date: 4/1/2025
-  Link: https://www.strava.com/activities/14049068785
+Earliest departure TO work: 6:50 AM
+  Date: 7/31/2025
+  Link: https://www.strava.com/activities/15298858110
 
 Latest departure TO work: 9:56 AM
   Date: 5/15/2025
@@ -27,10 +27,10 @@ Latest departure FROM work: 6:33 PM
   Link: https://www.strava.com/activities/14197623794
 
 Average commute TO work:
-  Distance: 1.79 miles
-  Moving time: 7m 59s
-  Elapsed time: 8m 43s
-  Stop time: 43s
+  Distance: 2.79 miles
+  Moving time: 11m 54s
+  Elapsed time: 13m 5s
+  Stop time: 1m 10s
 
 Average commute FROM work:
   Distance: 1.78 miles
@@ -46,13 +46,13 @@ Quickest commute TO work (by elapsed time): 6m 26s
   Stop time: 0s
   Link: https://www.strava.com/activities/14138459486
 
-Longest commute TO work (by elapsed time): 19m 4s
-  Date: 5/29/2025
-  Distance: 3.17 miles
-  Moving time: 17m 3s
-  Elapsed time: 19m 4s
-  Stop time: 2m 1s
-  Link: https://www.strava.com/activities/14632688384
+Longest commute TO work (by elapsed time): 1h 36m
+  Date: 7/31/2025
+  Distance: 21.94 miles
+  Moving time: 1h 26m
+  Elapsed time: 1h 36m
+  Stop time: 9m 39s
+  Link: https://www.strava.com/activities/15298858110
 
 Quickest commute FROM work (by elapsed time): 10m 56s
   Date: 5/22/2025
