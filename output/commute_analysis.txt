@@ -3,16 +3,16 @@
 
 Analysis for commutes from 2025 onwards
 
-Total number of commutes: 42
-Total distance of commutes: 137.24 miles
-Total elapsed time of commutes: 11h 58m
+Total number of commutes: 43
+Total distance of commutes: 153.02 miles
+Total elapsed time of commutes: 13h 19m
 
-Average departure time TO work: 8:55 AM
+Average departure time TO work: 8:49 AM
 Average departure time FROM work: 3:34 PM
 
-Earliest departure TO work: 6:47 AM
-  Date: 8/14/2025
-  Link: https://www.strava.com/activities/15457642470
+Earliest departure TO work: 6:44 AM
+  Date: 9/24/2025
+  Link: https://www.strava.com/activities/15922220476
 
 Latest departure TO work: 9:56 AM
   Date: 5/15/2025
@@ -27,10 +27,10 @@ Latest departure FROM work: 6:33 PM
   Link: https://www.strava.com/activities/14197623794
 
 Average commute TO work:
-  Distance: 3.73 miles
-  Moving time: 15m 32s
-  Elapsed time: 16m 51s
-  Stop time: 1m 18s
+  Distance: 4.28 miles
+  Moving time: 18m 1s
+  Elapsed time: 19m 47s
+  Stop time: 1m 45s
 
 Average commute FROM work:
   Distance: 2.81 miles
