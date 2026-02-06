@@ -1,11 +1,11 @@
 Fun Strava Statistics
 ====================
 
-Total Activities: 2177
-Total Distance (miles): 20846.72
-Total Moving Time (hours): 2308.12
-Total Elevation Gain (feet): 1585835.35
-Average Speed (mph): 7.87
+Total Activities: 2186
+Total Distance (miles): 20896.34
+Total Moving Time (hours): 2316.88
+Total Elevation Gain (feet): 1590366.19
+Average Speed (mph): 7.85
 Most Active Day: Wednesday
 Most Active Hour: 16:00
 Favorite Activity Type: Run
